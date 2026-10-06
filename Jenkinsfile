@@ -64,9 +64,9 @@ pipeline {
             echo 'Creating AWS Service by Terraform'
             sh '''
               cd Terraform
-              Terraform init
-              Terraform plan
-              Terraform apply -auto-approve
+              terraform init
+              terraform plan
+              terraform apply -auto-approve
            '''
               echo 'Successfully Aws Services Created'
         }
