@@ -65,6 +65,7 @@ pipeline {
             sh '''
               cd Terraform
               terraform init
+              terraform import aws_s3_bucket.s3 deploy-dpan || true
               terraform plan
               terraform apply -auto-approve
            '''
