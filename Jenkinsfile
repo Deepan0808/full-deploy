@@ -58,6 +58,7 @@ pipeline {
          }
     }
     
+ 
       stage('using Terraform'){
         steps{
             echo 'Creating AWS Service by Terraform'
