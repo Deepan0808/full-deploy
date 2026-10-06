@@ -82,9 +82,7 @@ pipeline {
             returnStdout: true
             ).trim()
          }
-           sh '''
               echo "S3_BUCKET= ${env.S3_BUCKET}"
-           '''
        }
     }
         
