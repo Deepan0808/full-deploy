@@ -1,10 +1,7 @@
-#S3
+
+variable "bucket_name" {}
 
 resource "aws_s3_bucket" "s3" {
-  bucket = "devops-workflow-bucket"
+  bucket = var.bucket_name
 
-  tags = {
-    Name        = "dpan bucket"
-    Environment = "Dev"
-  }
 }
