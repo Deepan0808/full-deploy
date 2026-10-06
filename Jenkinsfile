@@ -76,10 +76,9 @@ pipeline {
      stage('Terraform Outputs'){
        steps{
            echo 'Mentioning terrafrom Variables...'
-           sh 'cd Terraform'
             script {
             env.S3_BUCKET= sh(
-            script: "Terraform output -raw s3_bucket_name", 
+            script: "cd Terraform && terraform output -raw s3_bucket_name || echo deploy-dpan", 
             returnStdout: true
             ).trim()
          }
