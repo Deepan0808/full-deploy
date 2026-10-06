@@ -46,7 +46,7 @@ pipeline {
              withSonarQubeEnv('SonarQube') {   
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh """
-                            ${scannerhome}/bin/sonar-scanner \
+                            ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=frontend \
                             -Dsonar.sources=frontend\
                             -Dsonar.host.url=http://localhost:9000 \
