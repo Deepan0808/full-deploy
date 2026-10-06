@@ -63,10 +63,10 @@ pipeline {
         steps{
             echo 'Creating AWS Service by Terraform'
             sh '''
-              cd terraform
-              terraform init
-              terraform plan
-              terraform apply -auto-approve
+              cd Terraform
+              Terraform init
+              Terraform plan
+              Terraform apply -auto-approve
            '''
               echo 'Successfully Aws Services Created'
         }
@@ -75,10 +75,10 @@ pipeline {
      stage('Terraform Outputs'){
        steps{
            echo 'Mentioning terrafrom Variables...'
-           sh 'cd terraform'
+           sh 'cd Terraform'
             script {
             env.S3_BUCKET= sh(
-            script: "terraform output -raw s3_bucket_name", 
+            script: "Terraform output -raw s3_bucket_name", 
             returnStdout: true
             ).trim()
          }
