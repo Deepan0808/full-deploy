@@ -18,7 +18,7 @@ pipeline {
                 git branch: 'main',
                     credentialsId: 'git-creds',
                     url: 'https://github.com/Deepan0808/full-deploy.git'
-          }
+             }
         }
         
         stage('Install') {
@@ -57,33 +57,49 @@ pipeline {
                } 
          }
     }
-    
- 
-      stage('using Terraform'){
-        steps{
-            echo 'Creating AWS Service by Terraform'
-            sh '''
-              cd Terraform
-              terraform init
-              terraform import aws_s3_bucket.s3 deploy-dpan || true
-              terraform plan
-              terraform apply -auto-approve
-           '''
-              echo 'Successfully Aws Services Created'
-        }
-     }
+
      
-     stage('Terraform Outputs'){
-       steps{
-           echo 'Mentioning terrafrom Variables...'
-            script {
+         stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate( abortPipeline: false, credentialsId: 'sonar-token')
+                }
+            }
+        }
+        
+    stage('using Terraform'){
+      steps{
+        echo 'Creating AWS Service by Terraform'
+        sh '''
+          cd terraform
+          terraform init
+          terraform plan
+          terraform apply -auto-approve
+        '''
+        echo 'Successfully Aws Services Created'
+      }
+    }
+    
+    stage('Terraform Outputs'){
+      steps{
+        echo 'Mentioning terrafrom Variables...'
+        dir('Terraform'){
+          script {
             env.S3_BUCKET= sh(
-            script: "cd Terraform && terraform output -raw s3_bucket_name || echo deploy-dpan", 
-            returnStdout: true
+              script: "terraform output -raw s3_bucket_name", 
+              returnStdout: true
             ).trim()
-         }
-              echo "S3_BUCKET= ${env.S3_BUCKET}"
-       }
+            
+            env.CLOUDFRONT_DIST_ID= sh(
+              script: "terraform output -raw cloudfront_dist_id", 
+              returnStdout: true
+            ).trim()
+         
+            echo "S3_BUCKET= ${env.S3_BUCKET}"
+            echo "CLOUDFRONT_DIST_ID= ${env.CLOUDFRONT_DIST_ID}"
+          }
+        }
+      }
     }
         
        stage('Deploy S3 Bucket'){
@@ -91,9 +107,9 @@ pipeline {
                echo 'updating S3 Bucket'
                sh ''' 
                aws s3 sync frontend/dist/ \
-               s3://${S3_BUCKET}/ \
+               s3://$S3_BUCKET/ \
                --delete \
-               --region us-east-2
+               --region $AWS_DEFAULT_REGION
                '''
                echo 'Frontend Uploaded Successfully'
        }      
@@ -104,7 +120,7 @@ pipeline {
               echo 'Deploying...'
               sh ''' 
               aws cloudfront create-invalidation \
-              --distribution-id ${CLOUDFRONT_DIST_ID} \
+              --distribution-id E3IVNN8OTX80H7 \
               --paths "/*"
               '''
            }
