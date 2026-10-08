@@ -1,6 +1,6 @@
---
+---
 - name: Install Minikube on Ubuntu EC2
-  hosts: kubernetes-server
+  hosts: kubernetes_server
   become: yes
   vars:
     minikube_version: "v1.33.1"
