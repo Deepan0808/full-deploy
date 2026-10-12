@@ -8,7 +8,7 @@ pipeline {
 
         EC2_HOST    = '3.148.178.225'
         EC2_USER    = 'ubuntu'
-        EC2_APP_DIR = '/home/ubuntu/backend flow'
+        EC2_APP_DIR = '/home/ubuntu/backend-flow'
 
         HARBOR_URL     = '3.148.178.225:80'
         HARBOR_PROJECT = 'smart-task-dpan'
@@ -61,10 +61,10 @@ pipeline {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
                             set -e
-                            if [ ! -d ${EC2_APP_DIR}/.git ]; then
-                                git clone -b ${GIT_BRANCH} ${GIT_REPO} ${EC2_APP_DIR}
+                            if [ ! -d "${EC2_APP_DIR}/.git" ]; then
+                                git clone -b ${GIT_BRANCH} ${GIT_REPO} "${EC2_APP_DIR}"
                             fi
-                            cd ${EC2_APP_DIR}
+                            cd "${EC2_APP_DIR}"
                             git fetch origin ${GIT_BRANCH}
                             git reset --hard origin/${GIT_BRANCH}
                         '
